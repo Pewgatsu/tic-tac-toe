@@ -1,4 +1,36 @@
 * { 
     box-sizing: border-box;
+    /* border: 1px solid black; */
 }
+
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+main {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gameBoard {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.gameBoard button {
+    height: 100px;
+    width: 100px;
+    background: white;
+    border: 1px solid black;
+}
+
+
+
 
