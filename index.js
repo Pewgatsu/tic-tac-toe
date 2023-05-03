@@ -68,39 +68,90 @@ const gameController = (() => {
     if (round === 9) {
       gameOver = true;
     }
+    if (checkWinner()) {
+      gameOver = true;
+    }
   };
 
+  /**
+   * Checks if a row has been filled.
+   * If someone filled a row, returns true otherwise it returns false
+   *
+   */
   const checkRows = () => {
-
     for (let row = 0; row < 3; row++) {
       const rows = [];
-      for (let col = row * 3; col < row * 3 + 3; col++) {
+      for (let col = 0; col < row * 3 + 3; col++) {
         rows.push(gameBoard.getCell(col));
       }
 
-      if (rows.every((cell) => cell === "X") || rows.every((cell) => cell === "O")){
+      if (
+        rows.every((cell) => cell === "X") ||
+        rows.every((cell) => cell === "O")
+      ) {
         return true;
       }
     }
     return false;
   };
 
-  const checkColumns = () => {
+  /**
+   * Checks if a column has been filled.
+   * If someone filled a column, returns true otherwise it returns false
+   *
+   */
 
+  const checkColumns = () => {
     for (let col = 0; col < 3; col++) {
       const columns = [];
-      for (let row = 0; row < 3; row++ ){
-        columns.push(gameBoard.getCell(col + row * 3));
-
-        if (columns.every((cell) => cell === "X") || columns.every((cell) => cell === "O")){
-          return true;
-        }
+      for (let row = 0; row < 3; row++) {
+        columns.push(gameBoard.getCell(col * 3 + row));
       }
-      
-      
+
+      if (
+        columns.every((cell) => cell === "X") ||
+        columns.every((cell) => cell === "O")
+      ) {
+        return true;
+      }
     }
     return false;
-  }
+  };
+
+  /**
+   * Checks if a diagonal has been filled.
+   * If someone filled a diagonal, returns true otherwise it returns false
+   *
+   */
+
+  const checkDiagonals = () => {
+    const leftDiagonal = [
+      gameBoard.getCell(0),
+      gameBoard.getCell(4),
+      gameBoard.getCell(8),
+    ];
+    const rightDiagonal = [
+      gameBoard.getCell(6),
+      gameBoard.getCell(4),
+      gameBoard.getCell(2),
+    ];
+
+    if (
+      leftDiagonal.every((cell) => cell === "X") ||
+      leftDiagonal.every((cell) => cell === "O")
+    ) {
+      return true;
+    }
+
+    if (
+      rightDiagonal.every((cell) => cell === "X") ||
+      rightDiagonal.every((cell) => cell === "O")
+    ) {
+      return true;
+    }
+
+    return false;
+  };
 
   const getPlayerSign = () =>
     round % 2 === 1 ? playerX.getSign() : playerO.getSign();
@@ -108,11 +159,16 @@ const gameController = (() => {
   const getGameStatus = () => gameOver;
 
   const checkWinner = () => {
-    if (getGameStatus() || checkRows() || checkColumns()) {
+    if (getGameStatus() || checkRows() || checkColumns() || checkDiagonals()) {
       return true;
     }
     return false;
   };
 
-  return { playerMove, getPlayerSign, getGameStatus, checkWinner };
+  return {
+    playerMove,
+    getPlayerSign,
+    getGameStatus,
+    checkWinner,
+  };
 })();
