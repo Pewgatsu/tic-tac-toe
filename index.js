@@ -26,7 +26,7 @@ const gameBoard = (() => {
 
   const resetBoard = () => {
     for (let i = 0; i < board.length; i++) {
-      board[i] = "";
+      board[i] = undefined;
     }
   };
 
@@ -35,14 +35,24 @@ const gameBoard = (() => {
 
 const displayController = (() => {
   const boardCell = document.querySelectorAll(".boardCell");
+  const turnBanner = document.querySelector(".turnBanner");
+  const restartButton = document.querySelector('.restart');
 
   boardCell.forEach((cell) => {
     const cellIndex = cell.getAttribute("data-index");
-    cell.addEventListener("click", () => {
+    cell.addEventListener("click", (e) => {
+      if (gameController.getGameStatus() || e.target.textContent !== "") return
       gameController.playerMove(cellIndex);
       updateGameBoard();
     });
   });
+
+  restartButton.addEventListener('click', () => {
+    gameBoard.resetBoard();
+    gameController.reset();
+    updateGameBoard();
+    turnBanner.textContent = ("Player X's turn");
+  })
 
   const updateGameBoard = () => {
     for (let i = 0; i < boardCell.length; i++) {
@@ -50,7 +60,20 @@ const displayController = (() => {
     }
   };
 
-  return { updateGameBoard };
+  const updateTurnBanner = () => {
+    turnBanner.textContent = `Player ${gameController.getPlayerSign()}'s turn`;
+  };
+
+  const displayWinner = (winner) => {
+    if (winner === "draw"){
+      turnBanner.textContent = "Draw";
+    }else {
+      turnBanner.textContent = `Player ${winner} has won!`;
+    } 
+  }
+
+ 
+  return { updateGameBoard, updateTurnBanner, displayWinner };
 })();
 
 const gameController = (() => {
@@ -66,12 +89,17 @@ const gameController = (() => {
     }
     if (checkDraw()) {
       gameOver = true;
+      displayController.displayWinner("draw");
+      return;
     }
     if (checkWinner()) {
       gameOver = true;
+      displayController.displayWinner(getPlayerSign());
+      return;
     }
-
+  
     round += 1;
+    displayController.updateTurnBanner();
   };
 
   const checkDraw = () => {
@@ -179,10 +207,16 @@ const gameController = (() => {
     return false;
   };
 
+  const reset = () => {
+    round = 1;
+    gameOver = false;
+  }
+
   return {
     playerMove,
     getPlayerSign,
     getGameStatus,
     checkWinner,
+    reset
   };
 })();

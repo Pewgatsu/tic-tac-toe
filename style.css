@@ -36,6 +36,16 @@ main {
     border: 1px solid black;
 }
 
+.restart {
+    padding: 20px;
+    width: 200px;
+    color: white;
+    background: darkslategray;
+    border: 1px solid darkslategray;
+    text-transform: uppercase;
+    border-radius: 5px;
+}
+
 
 
 
