@@ -63,14 +63,22 @@ const gameController = (() => {
     const boardCell = gameBoard.getCell(index);
     if (boardCell === undefined) {
       gameBoard.setCell(index, getPlayerSign());
-      round += 1;
     }
-    if (round === 9) {
+    if (checkDraw()) {
       gameOver = true;
     }
     if (checkWinner()) {
       gameOver = true;
     }
+
+    round += 1;
+  };
+
+  const checkDraw = () => {
+    if (round === 9) {
+      return true;
+    }
+    return false;
   };
 
   /**
@@ -81,7 +89,7 @@ const gameController = (() => {
   const checkRows = () => {
     for (let row = 0; row < 3; row++) {
       const rows = [];
-      for (let col = 0; col < row * 3 + 3; col++) {
+      for (let col = row * 3; col < row * 3 + 3; col++) {
         rows.push(gameBoard.getCell(col));
       }
 
@@ -105,7 +113,7 @@ const gameController = (() => {
     for (let col = 0; col < 3; col++) {
       const columns = [];
       for (let row = 0; row < 3; row++) {
-        columns.push(gameBoard.getCell(col * 3 + row));
+        columns.push(gameBoard.getCell(col + 3 * row));
       }
 
       if (
@@ -159,7 +167,13 @@ const gameController = (() => {
   const getGameStatus = () => gameOver;
 
   const checkWinner = () => {
-    if (getGameStatus() || checkRows() || checkColumns() || checkDiagonals()) {
+    if (
+      getGameStatus() ||
+      checkRows() ||
+      checkColumns() ||
+      checkDiagonals() ||
+      checkDraw()
+    ) {
       return true;
     }
     return false;
